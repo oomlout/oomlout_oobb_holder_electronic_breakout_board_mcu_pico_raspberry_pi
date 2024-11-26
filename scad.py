@@ -17,10 +17,10 @@ def make_scad(**kwargs):
         #filter = "test"
 
         kwargs["save_type"] = "none"
-        #kwargs["save_type"] = "all"
+        kwargs["save_type"] = "all"
         
         navigation = False
-        #navigation = True    
+        navigation = True    
 
         kwargs["overwrite"] = True
         
@@ -49,7 +49,9 @@ def make_scad(**kwargs):
         
         part = copy.deepcopy(part_default)
         p3 = copy.deepcopy(kwargs)
-        #p3["thickness"] = 6
+        p3["width"] = 4
+        p3["height"] = 5
+        p3["thickness"] = 3
         part["kwargs"] = p3
         part["name"] = "base"
         parts.append(part)
@@ -106,11 +108,45 @@ def get_base(thing, **kwargs):
     p3["shape"] = f"oobb_holes"
     p3["both_holes"] = True  
     p3["depth"] = depth
-    p3["holes"] = "perimeter"
+    p3["holes"] = ["top","bottom","left"]
     #p3["m"] = "#"
     pos1 = copy.deepcopy(pos)         
     p3["pos"] = pos1
     oobb_base.append_full(thing,**p3)
+
+
+    #add screw_countersunk m2 
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "n"
+    p3["shape"] = f"oobb_screw_countersunk"
+    p3["radius_name"] = "m2"
+    p3["depth"] = depth
+    p3["holes"] = ["top","bottom","left"]
+    p3["m"] = "#"
+    pos1 = copy.deepcopy(pos)
+    pos1[0] += 0
+    pos1[1] += 10.2
+    shift_x = 5.7
+    shift_y = 23.5
+    shifts = []
+    shifts.append([shift_x,shift_y])
+    shifts.append([-shift_x,shift_y])
+    shifts.append([shift_x,-shift_y])
+    shifts.append([-shift_x,-shift_y])
+    poss = []
+    for shift in shifts:
+        pos11 = copy.deepcopy(pos1)
+        pos11[0] += shift[0]
+        pos11[1] += shift[1]
+        poss.append(pos11)
+    p3["pos"] = poss
+    rot1 = copy.deepcopy(rot)
+    rot1[1] += 180
+    p3["rot"] = rot1
+    oobb_base.append_full(thing,**p3)
+
+
+
 
     if prepare_print:
         #put into a rotation object

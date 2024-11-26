@@ -1,0 +1,19 @@
+full_rotations:
+- 0
+- 0
+- 0
+full_shift:
+- 0
+- 0
+- 0
+kwargs:
+  height: 5
+  modes:
+  - 3dpr
+  overwrite: true
+  save_type: all
+  thickness: 3
+  type: test_base
+  width: 4
+name: base
+project_name: test
