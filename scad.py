@@ -16,7 +16,7 @@ def make_scad(**kwargs):
         filter = ""
         #filter = "test"
 
-        kwargs["save_type"] = "none"
+        #kwargs["save_type"] = "none"
         kwargs["save_type"] = "all"
         
         navigation = False
@@ -43,7 +43,7 @@ def make_scad(**kwargs):
     if True:
 
         part_default = {} 
-        part_default["project_name"] = "test" ####### neeeds setting
+        part_default["project_name"] = "oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi" ####### neeeds setting
         part_default["full_shift"] = [0, 0, 0]
         part_default["full_rotations"] = [0, 0, 0]
         
@@ -82,7 +82,8 @@ def make_scad(**kwargs):
 
 def get_base(thing, **kwargs):
 
-    prepare_print = kwargs.get("prepare_print", False)
+    #prepare_print = kwargs.get("prepare_print", False)
+    prepare_print = kwargs.get("prepare_print", True)
     width = kwargs.get("width", 1)
     height = kwargs.get("height", 1)
     depth = kwargs.get("thickness", 3)                    
@@ -101,7 +102,71 @@ def get_base(thing, **kwargs):
     pos1 = copy.deepcopy(pos)         
     p3["pos"] = pos1
     oobb_base.append_full(thing,**p3)
-    
+
+    #add clamp piece
+    if True:
+        depth_clamp = 6
+        p3 = copy.deepcopy(kwargs)
+        p3["type"] = "p"
+        p3["shape"] = f"oobb_plate"
+        p3["width"] = 1
+        h = 3.5
+        p3["height"] = h
+        p3["depth"] = depth_clamp
+        #p3["m"] = "#"
+        pos1 = copy.deepcopy(pos)
+        pos1[0] += 0
+        pos1[1] += -((height - h) / 2) * 15
+        pos1[2] += depth
+        p3["pos"] = pos1
+        oobb_base.append_full(thing,**p3)
+
+        #extra bottom piece
+        p3 = copy.deepcopy(kwargs)
+        p3["type"] = "p"
+        p3["shape"] = f"oobb_plate"
+        p3["width"] = 2
+        p3["height"] = 1
+        p3["depth"] = depth_clamp
+        #p3["m"] = "#"
+        pos1 = copy.deepcopy(pos)
+        pos1[0] += 0
+        pos1[1] += -height /2 * 15 + 7.5
+        pos1[2] += depth
+        p3["pos"] = pos1
+        oobb_base.append_full(thing,**p3)
+
+        #add screw_countersunk
+        p3 = copy.deepcopy(kwargs)
+        p3["type"] = "n"
+        p3["shape"] = f"oobb_screw_countersunk"
+        p3["radius_name"] = "m3"
+        p3["depth"] = depth_clamp + depth
+        p3["holes"] = ["top","bottom","left"]
+        p3["m"] = "#"
+        pos1 = copy.deepcopy(pos)
+        poss = []
+        pos11 = copy.deepcopy(pos1)
+        pos11[0] += 0
+        pos11[1] += -height/2 * 15 + 7.5
+        
+        pos12 = copy.deepcopy(pos11)
+        pos12[1] += 7.5
+
+        poss.append(pos11)
+        poss.append(pos12)
+        p3["pos"] = poss
+        rot1 = copy.deepcopy(rot)
+        rot1[1] += 180
+        p3["rot"] = rot1
+        p3["nut"] = True
+        p3["overhang"] = True
+        p3["zz"] = "top"
+        oobb_base.append_full(thing,**p3)
+
+
+    #
+
     #add holes seperate
     p3 = copy.deepcopy(kwargs)
     p3["type"] = "p"
@@ -114,7 +179,156 @@ def get_base(thing, **kwargs):
     p3["pos"] = pos1
     oobb_base.append_full(thing,**p3)
 
+    style = "simple_hole"
+    style = "cutout_with_clamp"
 
+    if style == "simple_hole":
+        thing = add_simple_hole(thing, **kwargs)
+    elif style == "cutout_with_clamp":
+        p3 = copy.deepcopy(kwargs)
+        shift = [0,5.5,depth]
+        p3["shift"] = shift
+        thing = add_cutout_with_clamp(thing, **p3)
+
+
+
+
+
+    if prepare_print:
+        #put into a rotation object
+        components_second = copy.deepcopy(thing["components"])
+        return_value_2 = {}
+        return_value_2["type"]  = "rotation"
+        return_value_2["typetype"]  = "p"
+        pos1 = copy.deepcopy(pos)
+        pos1[0] += 60
+        pos1[2] += depth*2
+        return_value_2["pos"] = pos1
+        return_value_2["rot"] = [180,0,0]
+        return_value_2["objects"] = components_second
+        
+        thing["components"].append(return_value_2)
+
+    
+        #add slice # top
+        p3 = copy.deepcopy(kwargs)
+        p3["type"] = "n"
+        p3["shape"] = f"oobb_slice"
+        pos1 = copy.deepcopy(pos)
+        pos1[2] += depth
+        p3["pos"] = pos1
+        #p3["m"] = "#"
+        oobb_base.append_full(thing,**p3)
+    
+###### utilities
+
+def add_cutout_with_clamp(thing, **kwargs):
+    depth = kwargs.get("thickness", 3)
+    shift = kwargs.get("shift", [0,0,0])
+    pos = kwargs.get("pos", [0, 0, 0])
+    pos = [pos[i] + shift[i] for i in range(3)]
+
+    #add main cutout square
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "n"
+    p3["shape"] = f"oobb_cube"
+    ex = 0.5
+    w = 21 + ex
+    h = 51 + ex
+    d = 1
+    p3["size"] = [w,h,d]
+    p3["depth"] = depth
+    #p3["m"] = "#"
+    pos1 = copy.deepcopy(pos)
+    pos1[0] += 0
+    pos1[1] += 0
+    pos1[2] += -d
+    p3["pos"] = pos1
+    oobb_base.append_full(thing,**p3)
+
+    #wifi cutout cube with clearance
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "n"
+    p3["shape"] = f"oobb_cube"
+    ex = 1
+    w = 12 + ex
+    h = 10 + ex
+    d = 2
+    p3["size"] = [w,h,d]
+    p3["m"] = "#"
+    pos1 = copy.deepcopy(pos)
+    pos1[0] += 0
+    pos1[1] += -11.75
+    pos1[2] += 0
+    p3["pos"] = pos1
+    oobb_base.append_full(thing,**p3)
+
+    #add chip squisher cutout
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "n"
+    p3["shape"] = f"oobb_cube"
+    ex = 1
+    w = 15 #7 + ex
+    h = 36 # + ex
+    d = 1
+    p3["size"] = [w,h,d]
+    p3["m"] = "#"
+    pos1 = copy.deepcopy(pos)
+    pos1[0] += 0
+    pos1[1] += -7.75
+    pos1[2] += 0
+    p3["pos"] = pos1
+    oobb_base.append_full(thing,**p3)
+
+    #add cutouts for headers
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "n"
+    p3["shape"] = f"oobb_cube"
+    ex = 0.5
+    w = 3 + ex
+    h = 51 + ex
+    d = depth
+    p3["size"] = [w,h,d]    
+    #p3["m"] = "#"    
+    shift_x = 2.54 * 3.5
+    poss = []
+    pos1 = copy.deepcopy(pos)
+    pos1[2] += -depth
+    for i in range(2):
+        pos11 = copy.deepcopy(pos1)
+        pos11[0] += shift_x
+        pos11[1] += 0
+        poss.append(pos11)
+        shift_x = -shift_x
+    p3["pos"] = poss
+    oobb_base.append_full(thing,**p3)
+
+    #add usb cutout
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "n"
+    p3["shape"] = f"oobb_cube"
+    ex = 0
+    w = 11 + ex
+    h = 9 + ex
+    d = depth
+    p3["size"] = [w,h,d]
+    p3["m"] = "#"
+    pos1 = copy.deepcopy(pos)
+    pos1[0] += 0
+    pos1[1] += 30
+    pos1[2] += -depth
+    p3["pos"] = pos1
+    oobb_base.append_full(thing,**p3)
+
+    return thing
+
+
+def add_simple_hole(thing, **kwargs):
+    depth = kwargs.get("thickness", 3)
+    shift = kwargs.get("shift", [0,0,0])
+    pos = kwargs.get("pos", [0, 0, 0])    
+    pos = [pos[i] + shift[i] for i in range(3)]
+        
     #add screw_countersunk m2 
     p3 = copy.deepcopy(kwargs)
     p3["type"] = "n"
@@ -144,34 +358,6 @@ def get_base(thing, **kwargs):
     rot1[1] += 180
     p3["rot"] = rot1
     oobb_base.append_full(thing,**p3)
-
-
-
-
-    if prepare_print:
-        #put into a rotation object
-        components_second = copy.deepcopy(thing["components"])
-        return_value_2 = {}
-        return_value_2["type"]  = "rotation"
-        return_value_2["typetype"]  = "p"
-        pos1 = copy.deepcopy(pos)
-        pos1[0] += 50
-        return_value_2["pos"] = pos1
-        return_value_2["rot"] = [180,0,0]
-        return_value_2["objects"] = components_second
-        
-        thing["components"].append(return_value_2)
-
-    
-        #add slice # top
-        p3 = copy.deepcopy(kwargs)
-        p3["type"] = "n"
-        p3["shape"] = f"oobb_slice"
-        #p3["m"] = "#"
-        oobb_base.append_full(thing,**p3)
-    
-###### utilities
-
 
 
 def make_scad_generic(part):
