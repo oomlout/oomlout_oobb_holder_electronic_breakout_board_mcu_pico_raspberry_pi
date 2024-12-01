@@ -16,8 +16,8 @@ def make_scad(**kwargs):
         filter = ""
         #filter = "test"
 
-        #kwargs["save_type"] = "none"
-        kwargs["save_type"] = "all"
+        kwargs["save_type"] = "none"
+        #kwargs["save_type"] = "all"
         
         navigation = False
         navigation = True    
