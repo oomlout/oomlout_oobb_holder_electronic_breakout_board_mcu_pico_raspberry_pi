@@ -1,0 +1,20 @@
+full_rotations:
+- 0
+- 0
+- 0
+full_shift:
+- 0
+- 0
+- 0
+kwargs:
+  extra: electronic_breakout_board_mcu_pico_screw_terminal_3_5_mm_pitch_55_mm_width_73_mm_length_purple_pcb
+  height: 7
+  modes:
+  - 3dpr
+  overwrite: true
+  save_type: none
+  thickness: 3
+  type: test_base
+  width: 6
+name: base
+project_name: test
