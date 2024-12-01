@@ -1,0 +1,24 @@
+parts:
+  oobb_oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi_base_04_05_03:
+    full_rotations:
+    - 0
+    - 0
+    - 0
+    full_shift:
+    - 0
+    - 0
+    - 0
+    kwargs:
+      height: 5
+      modes:
+      - 3dpr
+      overwrite: true
+      save_type: all
+      thickness: 3
+      type: oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi_base
+      width: 4
+    name: base
+    project_name: oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi
+project_id: oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi
+project_name: Oomlout oobb holder electronic breakout board mcu pico raspberry pi
+project_repo: https://github.com/oomlout/oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi

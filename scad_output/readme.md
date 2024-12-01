@@ -1,0 +1,9 @@
+# Oomlout oobb holder electronic breakout board mcu pico raspberry pi
+
+
+## parts
+
+### oobb_oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi_base_04_05_03
+* link: [/oobb_oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi_base_04_05_03](oobb_oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi_base_04_05_03)  
+![](oobb_oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi_base_04_05_03/3dpr_300.png)  ![](oobb_oomlout_oobb_holder_electronic_breakout_board_mcu_pico_raspberry_pi_base_04_05_03/image_300.jpg)
+ 
