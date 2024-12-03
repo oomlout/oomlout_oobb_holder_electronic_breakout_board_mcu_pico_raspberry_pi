@@ -62,11 +62,21 @@ def make_scad(**kwargs):
         p3["width"] = 6
         p3["height"] = 7
         p3["thickness"] = 3
-        p3["extra"] = "electronic_breakout_board_mcu_pico_screw_terminal_3_5_mm_pitch_55_mm_width_73_mm_length_purple_pcb"
+        p3["extra"] = "electronic_breakout_board_mcu_pico_screw_terminal_55_mm_width_73_mm_height_purple_pcb"
         part["kwargs"] = p3
         part["name"] = "base"
         parts.append(part)
         
+        part = copy.deepcopy(part_default)
+        p3 = copy.deepcopy(kwargs)
+        p3["width"] = 5
+        p3["height"] = 6
+        p3["thickness"] = 3
+        p3["extra"] = "electronic_breakout_board_mcu_pico_robotic_42_mm_width_64_mm_height_green_pcb"
+        part["kwargs"] = p3
+        part["name"] = "base"
+        parts.append(part)
+
     #make the parts
     if True:
         for part in parts:
@@ -94,10 +104,117 @@ def get_base(thing, **kwargs):
     extra = kwargs.get("extra", "")
     if extra == "":
         get_base_simple(thing, **kwargs)
-    elif extra == "electronic_breakout_board_mcu_pico_screw_terminal_3_5_mm_pitch_55_mm_width_73_mm_length_purple_pcb":
-        get_base_electronic_breakout_board_mcu_pico_screw_terminal_3_5_mm_pitch_55_mm_width_73_mm_length_purple_pcb(thing, **kwargs)
+    elif extra == "electronic_breakout_board_mcu_pico_screw_terminal_55_mm_width_73_mm_height_purple_pcb":
+        get_base_electronic_breakout_board_mcu_pico_screw_terminal_55_mm_width_73_mm_height_purple_pcb(thing, **kwargs)
+    elif extra == "electronic_breakout_board_mcu_pico_robotic_42_mm_width_64_mm_height_green_pcb":
+        get_base_electronic_breakout_board_mcu_pico_robotic_42_mm_width_64_mm_height_green_pcb(thing, **kwargs)
 
-def get_base_electronic_breakout_board_mcu_pico_screw_terminal_3_5_mm_pitch_55_mm_width_73_mm_length_purple_pcb(thing, **kwargs):
+def get_base_electronic_breakout_board_mcu_pico_robotic_42_mm_width_64_mm_height_green_pcb(thing, **kwargs):
+    #prepare_print = kwargs.get("prepare_print", False)
+    prepare_print = kwargs.get("prepare_print", False)
+    width = kwargs.get("width", 1)
+    height = kwargs.get("height", 1)
+    depth = kwargs.get("thickness", 3)                    
+    rot = kwargs.get("rot", [0, 0, 0])
+    pos = kwargs.get("pos", [0, 0, 0])
+    #pos = copy.deepcopy(pos)
+    #pos[2] += -20
+
+    #add plate
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "p"
+    p3["shape"] = f"oobb_plate"    
+    p3["depth"] = depth
+    #p3["holes"] = True         uncomment to include default holes
+    #p3["m"] = "#"
+    pos1 = copy.deepcopy(pos)         
+    p3["pos"] = pos1
+    oobb_base.append_full(thing,**p3)
+
+    #add holes seperate
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "p"
+    p3["shape"] = f"oobb_holes"
+    p3["both_holes"] = True  
+    p3["depth"] = depth
+    p3["holes"] = "perimeter"
+    #p3["m"] = "#"
+    pos1 = copy.deepcopy(pos)         
+    p3["pos"] = pos1
+    oobb_base.append_full(thing,**p3)
+
+    locations = []
+    shift_x = 17
+    shift_y = 28
+    locations.append([shift_x,-shift_y,0])
+    locations.append([-shift_x,-shift_y,0])    
+    locations.append([14,28.5,0])
+
+    depth_riser = 3
+    depth_total = depth + depth_riser
+
+    #add screw_countersunk m3
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "n"
+    p3["shape"] = f"oobb_screw_countersunk"
+    p3["radius_name"] = "m3"
+    p3["depth"] = depth_total
+    p3["holes"] = ["top","bottom","left"]
+    p3["m"] = "#"
+    p3["pos"] = locations
+    rot1 = copy.deepcopy(rot)
+    rot1[1] += 180
+    p3["rot"] = rot1
+    oobb_base.append_full(thing,**p3)
+
+
+    #add cylinder standoffs 10 mm  dianmeter 3 mm height
+    p3 = copy.deepcopy(kwargs)
+    p3["type"] = "p"
+    p3["shape"] = f"oobb_cylinder"
+    p3["radius"] = 8/2
+    p3["depth"] = depth_total
+    #p3["m"] = "#"
+    poss = copy.deepcopy(locations)
+    for pos1 in poss:
+        pos1[2] += depth
+    p3["pos"] = poss
+    oobb_base.append_full(thing,**p3)
+
+
+
+
+
+
+
+
+    if prepare_print:
+        #put into a rotation object
+        components_second = copy.deepcopy(thing["components"])
+        return_value_2 = {}
+        return_value_2["type"]  = "rotation"
+        return_value_2["typetype"]  = "p"
+        pos1 = copy.deepcopy(pos)
+        pos1[0] += 60
+        pos1[2] += depth*2
+        return_value_2["pos"] = pos1
+        return_value_2["rot"] = [180,0,0]
+        return_value_2["objects"] = components_second
+        
+        thing["components"].append(return_value_2)
+
+    
+        #add slice # top
+        p3 = copy.deepcopy(kwargs)
+        p3["type"] = "n"
+        p3["shape"] = f"oobb_slice"
+        pos1 = copy.deepcopy(pos)
+        pos1[2] += depth
+        p3["pos"] = pos1
+        #p3["m"] = "#"
+        oobb_base.append_full(thing,**p3)
+
+def get_base_electronic_breakout_board_mcu_pico_screw_terminal_55_mm_width_73_mm_height_purple_pcb(thing, **kwargs):
     #prepare_print = kwargs.get("prepare_print", False)
     prepare_print = kwargs.get("prepare_print", False)
     width = kwargs.get("width", 1)

@@ -7,14 +7,14 @@ full_shift:
 - 0
 - 0
 kwargs:
-  extra: electronic_breakout_board_mcu_pico_screw_terminal_3_5_mm_pitch_55_mm_width_73_mm_length_purple_pcb
-  height: 7
+  extra: electronic_breakout_board_mcu_pico_robotic_42_mm_width_64_mm_height_green_pcb
+  height: 6
   modes:
   - 3dpr
   overwrite: true
   save_type: all
   thickness: 3
   type: test_base
-  width: 6
+  width: 5
 name: base
 project_name: test
