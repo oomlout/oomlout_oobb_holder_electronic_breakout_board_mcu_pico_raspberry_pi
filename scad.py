@@ -19,7 +19,7 @@ def make_scad(**kwargs):
         kwargs["save_type"] = "none"
         #kwargs["save_type"] = "all"
         
-        navigation = False
+        #navigation = False
         navigation = True    
 
         kwargs["overwrite"] = True

@@ -11,7 +11,9 @@ kwargs:
   height: 6
   modes:
   - 3dpr
-  overwrite: true
+  - laser
+  - 'true'
+  overwrite: false
   save_type: all
   thickness: 3
   type: test_base
